@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="cgt-5w-hrl" customClass="ItemCell">
+            <rect key="frame" x="0.0" y="0.0" width="292" height="150"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="292" height="150"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="hello world" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Edu-12-uOH">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="50" id="aOZ-Wh-kWI"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="this week" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yZR-Dm-Mvh">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="7Lf-bZ-F8i"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <color key="backgroundColor" red="1" green="0.318005449" blue="0.46975286100000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="Edu-12-uOH" firstAttribute="leading" secondItem="cgt-5w-hrl" secondAttribute="leading" id="GwQ-jo-Dgx"/>
+                <constraint firstAttribute="trailing" secondItem="Edu-12-uOH" secondAttribute="trailing" id="U42-TZ-Zp9"/>
+                <constraint firstItem="Edu-12-uOH" firstAttribute="top" secondItem="yZR-Dm-Mvh" secondAttribute="bottom" constant="5" id="rVK-vg-ZMh"/>
+                <constraint firstAttribute="trailing" secondItem="yZR-Dm-Mvh" secondAttribute="trailing" id="t8d-UW-lBV"/>
+                <constraint firstItem="yZR-Dm-Mvh" firstAttribute="top" secondItem="cgt-5w-hrl" secondAttribute="top" constant="27" id="toK-yo-J2X"/>
+                <constraint firstItem="yZR-Dm-Mvh" firstAttribute="leading" secondItem="cgt-5w-hrl" secondAttribute="leading" id="ybH-Tk-27W"/>
+            </constraints>
+            <size key="customSize" width="292" height="110"/>
+            <point key="canvasLocation" x="3" y="-14"/>
+        </collectionViewCell>
+    </objects>
+</document>

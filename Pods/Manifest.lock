@@ -1,0 +1,21 @@
+PODS:
+  - EBForeNotification (1.0.7)
+  - Masonry (1.0.2)
+  - MBProgressHUD (1.0.0)
+  - pop (1.0.9)
+
+DEPENDENCIES:
+  - EBForeNotification
+  - Masonry
+  - MBProgressHUD
+  - pop
+
+SPEC CHECKSUMS:
+  EBForeNotification: d2426fa084f7af912c665b80529cfb3fe5dbdb79
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
+  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
+  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
+
+PODFILE CHECKSUM: 54b8312b9ed031dfe8347d149d356fa348dc7848
+
+COCOAPODS: 1.1.0.beta.2
