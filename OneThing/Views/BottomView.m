@@ -7,11 +7,14 @@
 //
 
 #import "BottomView.h"
+#import "ThingModel.h"
 #import <UserNotifications/UserNotifications.h>
 #import <EBForeNotification.h>
+
 @interface BottomView ()
 @property (nonatomic,strong)NSArray * imgoffArray;
 @property (nonatomic,strong)NSArray * imgonArray;
+@property (nonatomic,strong)ThingModel * currentThing;
 @end
 
 @implementation BottomView
@@ -20,6 +23,7 @@
     if (self = [super initWithFrame:frame]) {
         _imgoffArray =@[@"calender_off",@"reminder_off",@"notification_off",@"wallpaper_off"];
         _imgonArray =@[@"calender_on",@"reminder_on",@"notification_on",@"wallpaper_on"];
+        _currentThing = [ThingModel getCurrentThing];
         [self setup];
     }
     return self;
@@ -49,54 +53,42 @@
 
 - (void)buttonAction:(UIButton*)btn{
     btn.selected = !btn.selected;
-    if (btn.selected) {
-        btn.backgroundColor = [UIColor getColor:@"#bdc2c7"];
-    }else{
-        btn.backgroundColor = [UIColor whiteColor];
-    }
-    NSLog(@"btn == %ld",(long)btn.tag);
-    if(btn.tag ==1000){
-    [[EventHandler shareInstance] addEventNotify:[NSDate date] title:@"测试添加事件到日历成功"];
-    }else if (btn.tag == 1001){
-        [[EventHandler shareInstance] addReminderNotify:[NSDate date] title:@"测试添加提醒"];
-
+    btn.backgroundColor = btn.selected ? [UIColor getColor:@"#bdc2c7"]:[UIColor whiteColor];
+   
+     if(btn.tag ==1000){
+        if(btn.selected){
+           [[EventHandler shareInstance] addEventNotify:[NSDate date] title:_currentThing.thingName];
+        }else{
+            //移除事件
+            [[EventHandler shareInstance] removeEvent];
+        }
+     }else if (btn.tag == 1001){
+         if (btn.selected) {
+             [[EventHandler shareInstance] addReminderNotify:[NSDate date] title:_currentThing.thingName];
+         }else{
+             [[EventHandler shareInstance] removeReminder];
+         }
+        
     }else if (btn.tag == 1002){
         //本地通知
- 
+        
+      if(btn.selected){
         [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionBadge|UNAuthorizationOptionSound|UNAuthorizationOptionAlert completionHandler:^(BOOL granted, NSError * _Nullable error) {
             if (granted) {
-                [self sendNotice];
+                [ManagerHandler sendCheckFinishThingNotice];
             }
         }];
-        
     }else{
-        
+           [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        }
+    
+    }else{
+       // 换肤
     }
 }
 
 
-- (void)sendNotice{
-    NSLog(@"===创建本地通知===");
-    UILocalNotification *localNote = [[UILocalNotification alloc] init];
- 
-    localNote.fireDate = [NSDate dateWithTimeIntervalSinceNow:5.0];
-    localNote.alertBody = @"这周你的事情完成了吗？";
-    localNote.alertAction = @"解锁";
-    localNote.hasAction = NO;
-//    localNote.alertLaunchImage = @"123Abc";
-    localNote.alertTitle = @"你有一条新通知";
-//    localNote.soundName = @"buyao.wav";
-    localNote.applicationIconBadgeNumber = 1;
-    localNote.repeatInterval= NSCalendarUnitWeekday;//通知重复次数
-    localNote.repeatCalendar=[NSCalendar currentCalendar];
-    
-    localNote.userInfo = @{@"aps":@"这周你的事情完成了吗"};
-    localNote.soundName=UILocalNotificationDefaultSoundName;
-    // 3.调用通知
-    [[UIApplication sharedApplication] scheduleLocalNotification:localNote];
-}
-
-- (UIButton *)custombuttonWithImgnormal:(NSString *)imgNormal selectedImg:(NSString *)selectedImg{
+ - (UIButton *)custombuttonWithImgnormal:(NSString *)imgNormal selectedImg:(NSString *)selectedImg{
     UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn setImage:[UIImage imageNamed:imgNormal] forState:UIControlStateNormal];
     [btn setImage:[UIImage imageNamed:selectedImg] forState:UIControlStateSelected];

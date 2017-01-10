@@ -1,21 +1,29 @@
 PODS:
+  - DateTools (1.7.0)
   - EBForeNotification (1.0.7)
   - Masonry (1.0.2)
   - MBProgressHUD (1.0.0)
   - pop (1.0.9)
+  - Realm (2.1.2):
+    - Realm/Headers (= 2.1.2)
+  - Realm/Headers (2.1.2)
 
 DEPENDENCIES:
+  - DateTools
   - EBForeNotification
   - Masonry
   - MBProgressHUD
   - pop
+  - Realm
 
 SPEC CHECKSUMS:
+  DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
   EBForeNotification: d2426fa084f7af912c665b80529cfb3fe5dbdb79
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
+  Realm: efe855f4d977c8ce5a82d3116d9f1ff155a6550c
 
-PODFILE CHECKSUM: 54b8312b9ed031dfe8347d149d356fa348dc7848
+PODFILE CHECKSUM: c129ee24fff1f467fc42a482281b58d7c73af8b1
 
-COCOAPODS: 1.1.0.beta.2
+COCOAPODS: 1.1.1

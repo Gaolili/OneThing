@@ -18,9 +18,14 @@
 #import "UIColorHex.h"
 #import "UIImage+TintColor.h"
 #import "EventHandler.h"
+#import "NSDate+Utilities.h"
+#import "ManagerHandler.h"
 
 #import <Masonry.h>
 #import <POP.h>
 #import <MBProgressHUD.h>
+#import <EBForeNotification.h>
+#import <DateTools.h>
+#import <Realm.h>
 
 #endif /* PrefixHeader_pch */

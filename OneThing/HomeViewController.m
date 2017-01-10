@@ -10,7 +10,7 @@
 #import "InputView.h"
 #import "WelcomView.h"
 #import "BottomView.h"
-
+#import "ThingModel.h"
 @interface HomeViewController ()<InputViewDelegate>
 @property (nonatomic,strong)InputView * nameInput;
 @property (nonatomic,strong)WelcomView * welcomeView;
@@ -27,17 +27,27 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     
-    [self.nameInput.inputField becomeFirstResponder];
-    [self.view addSubview:self.nameInput];
-    self.nameInput.frame = CGRectMake(0, 0, ScreenWidth,130);
-    self.nameInput.center = self.view.center;
+    if (![ManagerHandler shouldPresentIntroVC]) {
+        [self.nameInput.inputField becomeFirstResponder];
+        [self.view addSubview:self.nameInput];
+        self.nameInput.frame = CGRectMake(0, 0, ScreenWidth,130);
+        self.nameInput.center = self.view.center;
+        
+        self.welcomeView.frame = CGRectMake(0, 0, ScreenWidth, 100);
+        self.welcomeView.center = self.view.center;
+    }else{
+        self.eventInput.hidden = NO;
+    }
     
     [self.view addSubview:self.eventInput];
     self.eventInput.frame = CGRectMake(0, 0, ScreenWidth, 130);
     self.eventInput.center = CGPointMake(self.view.center.x, self.view.center.y -100);
-   
-    self.welcomeView.frame = CGRectMake(0, 0, ScreenWidth, 200);
-    self.welcomeView.center = self.view.center;
+    
+    if ([ThingModel isExitThisWeekThing]) {
+        self.eventInput.inputField.text = [ThingModel getCurrentThing].thingName;
+        [self.eventInput hiddenTitleAndBtnAnimation];
+        [self eventDisappearAnimation];
+    }
     
     [self.view addSubview:self.bottomView];
     
@@ -50,6 +60,7 @@
         }
     }else{
         if (self.eventInput.inputField.text.length) {
+            [self.eventInput saveThing];
             [self.eventInput hiddenTitleAndBtnAnimation];
             [self eventDisappearAnimation];
         }
@@ -82,7 +93,9 @@
 - (void)welocmeAnimation{
     
     WeakSelf(self);
-    self.welcomeView.name = self.nameInput.inputField.text;
+    
+    [ManagerHandler saveUserName:self.nameInput.inputField.text];
+    self.welcomeView.name = [ManagerHandler getUserName];
     
     POPBasicAnimation * welcomAnim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerOpacity];
     welcomAnim.fromValue = @(0.0);
@@ -92,7 +105,7 @@
     welcomAnim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     
     POPBasicAnimation * welcomeMoveAnimat = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
-    welcomeMoveAnimat.toValue = @(CGRectGetHeight(self.view.bounds)/2 + 100);
+    welcomeMoveAnimat.toValue = @(CGRectGetHeight(self.view.bounds)/2 + 50);
     welcomeMoveAnimat.duration = 2.0f;
     welcomeMoveAnimat.beginTime = CACurrentMediaTime() ;
     welcomeMoveAnimat.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
@@ -154,7 +167,9 @@
 //    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
 //    CGRect keyboardRect = [aValue CGRectValue];
 //    int height = keyboardRect.size.height;
- 
+    
+    [self keyboardHide:nil];
+    
     
     [UIView animateWithDuration:0.23 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
         CGRect origin = self.nameInput.frame;

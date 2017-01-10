@@ -10,7 +10,9 @@
 #import "HomeViewController.h"
 #import "ListViewController.h"
 #import <UserNotifications/UserNotifications.h>
-#import <EBForeNotification.h>
+
+#import "ThingModel.h"
+
 @interface AppDelegate ()
 
 @end
@@ -21,7 +23,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    
+    // 预处理的一些操作
+    _eventStore  = [[EKEventStore alloc] init];
+    [ManagerHandler sendAddThingNotice];
     [application setApplicationIconBadgeNumber:0];
     
     if ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0) {
@@ -47,12 +51,6 @@
     NSDictionary *userInfo=notification.userInfo;
     [EBForeNotification handleRemoteNotification:userInfo soundID:1312];
  
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-     //系统声音弹窗
-    [EBForeNotification handleRemoteNotification:userInfo soundID:1312];
-    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 #pragma mark 进入前台后设置消息信息

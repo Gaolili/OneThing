@@ -20,5 +20,5 @@
 - (instancetype)initWithTitle:(NSString *)title;
 
 - (void)hiddenTitleAndBtnAnimation;
-- (CGFloat)getHeight;
+- (void)saveThing;
 @end

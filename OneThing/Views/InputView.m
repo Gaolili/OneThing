@@ -7,7 +7,7 @@
 //
 
 #import "InputView.h"
-
+#import "ThingModel.h"
 
 @interface InputView ()<UITextViewDelegate>
 @property (nonatomic,strong)NSString * title;
@@ -79,6 +79,12 @@
     if ([self.inputDelegate respondsToSelector:@selector(clickSureBtnDelegateMethodTitle:)]) {
         [self.inputDelegate clickSureBtnDelegateMethodTitle:_title];
     }
+}
+- (void)saveThing{
+    ThingModel * currentModel = [[ThingModel alloc]init];
+    currentModel.thingName = _inputField.text;
+    currentModel.createDate = [NSDate date];
+    [currentModel saveToDataBase];
 }
 
 - (void)hiddenTitleAndBtnAnimation{

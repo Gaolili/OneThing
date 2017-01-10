@@ -16,6 +16,9 @@
 		8B2398FB1E1E05B6000DCA82 /* TrajanPro-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8B2398FA1E1E05B6000DCA82 /* TrajanPro-Regular.otf */; };
 		8B2398FE1E1E17C6000DCA82 /* BottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B2398FD1E1E17C6000DCA82 /* BottomView.m */; };
 		8B305BFB1E1F66F900EBB7F4 /* EventHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B305BFA1E1F66F900EBB7F4 /* EventHandler.m */; };
+		8B42A1971E2477CB00141645 /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B42A1961E2477CB00141645 /* NSDate+Utilities.m */; };
+		8B42A19B1E247EC000141645 /* ThingModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B42A19A1E247EC000141645 /* ThingModel.m */; };
+		8B42A19E1E24AD1000141645 /* ManagerHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B42A19D1E24AD1000141645 /* ManagerHandler.m */; };
 		8BDC6D021E1B75BA00CB85FC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC6D011E1B75BA00CB85FC /* main.m */; };
 		8BDC6D051E1B75BA00CB85FC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC6D041E1B75BA00CB85FC /* AppDelegate.m */; };
 		8BDC6D0B1E1B75BA00CB85FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8BDC6D091E1B75BA00CB85FC /* Main.storyboard */; };
@@ -64,6 +67,12 @@
 		8B2398FD1E1E17C6000DCA82 /* BottomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BottomView.m; sourceTree = "<group>"; };
 		8B305BF91E1F66F900EBB7F4 /* EventHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventHandler.h; sourceTree = "<group>"; };
 		8B305BFA1E1F66F900EBB7F4 /* EventHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventHandler.m; sourceTree = "<group>"; };
+		8B42A1951E2477CB00141645 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
+		8B42A1961E2477CB00141645 /* NSDate+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Utilities.m"; sourceTree = "<group>"; };
+		8B42A1991E247EC000141645 /* ThingModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThingModel.h; sourceTree = "<group>"; };
+		8B42A19A1E247EC000141645 /* ThingModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThingModel.m; sourceTree = "<group>"; };
+		8B42A19C1E24AD1000141645 /* ManagerHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManagerHandler.h; sourceTree = "<group>"; };
+		8B42A19D1E24AD1000141645 /* ManagerHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManagerHandler.m; sourceTree = "<group>"; };
 		8BDC6CFD1E1B75B900CB85FC /* OneThing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneThing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BDC6D011E1B75BA00CB85FC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8BDC6D031E1B75BA00CB85FC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -139,6 +148,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8B42A1981E247EAB00141645 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8B42A1991E247EC000141645 /* ThingModel.h */,
+				8B42A19A1E247EC000141645 /* ThingModel.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		8BDC6CF41E1B75B900CB85FC = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +182,7 @@
 		8BDC6CFF1E1B75B900CB85FC /* OneThing */ = {
 			isa = PBXGroup;
 			children = (
+				8B42A1981E247EAB00141645 /* Models */,
 				8BDC6D541E1B8D1300CB85FC /* Config */,
 				8BDC6D4C1E1B814C00CB85FC /* Category */,
 				8BDC6D3F1E1B7CDB00CB85FC /* Views */,
@@ -246,9 +265,13 @@
 		8BDC6D541E1B8D1300CB85FC /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				8B42A1951E2477CB00141645 /* NSDate+Utilities.h */,
+				8B42A1961E2477CB00141645 /* NSDate+Utilities.m */,
 				8BDC6D551E1B8D3F00CB85FC /* Macro.h */,
 				8B305BF91E1F66F900EBB7F4 /* EventHandler.h */,
 				8B305BFA1E1F66F900EBB7F4 /* EventHandler.m */,
+				8B42A19C1E24AD1000141645 /* ManagerHandler.h */,
+				8B42A19D1E24AD1000141645 /* ManagerHandler.m */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -325,6 +348,11 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = 36QCBBKZKD;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					8BDC6D151E1B75BA00CB85FC = {
 						CreatedOnToolsVersion = 8.1;
@@ -444,6 +472,8 @@
 			files = (
 				8BDC6D051E1B75BA00CB85FC /* AppDelegate.m in Sources */,
 				8BDC6D5B1E1B988500CB85FC /* WelcomView.m in Sources */,
+				8B42A1971E2477CB00141645 /* NSDate+Utilities.m in Sources */,
+				8B42A19E1E24AD1000141645 /* ManagerHandler.m in Sources */,
 				2F8699B51E20DDFF00A3F741 /* ListViewController.m in Sources */,
 				8BDC6D521E1B816C00CB85FC /* NSString+Category.m in Sources */,
 				2F8699BD1E20DF9400A3F741 /* ListItemLayout.m in Sources */,
@@ -453,6 +483,7 @@
 				8BDC6D581E1B951200CB85FC /* UIColorHex.m in Sources */,
 				8BDC6D481E1B7E4500CB85FC /* InputView.m in Sources */,
 				8BDC6D021E1B75BA00CB85FC /* main.m in Sources */,
+				8B42A19B1E247EC000141645 /* ThingModel.m in Sources */,
 				8B305BFB1E1F66F900EBB7F4 /* EventHandler.m in Sources */,
 				8BDC6D4F1E1B814C00CB85FC /* UILabel+Category.m in Sources */,
 				8BDC6D351E1B7B0700CB85FC /* HomeViewController.m in Sources */,
@@ -606,7 +637,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 36QCBBKZKD;
-				GCC_PREFIX_HEADER = /Users/gaolili/Desktop/OneThing/OneThing/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/OneThing/PrefixHeader.pch";
 				INFOPLIST_FILE = OneThing/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -621,7 +652,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 36QCBBKZKD;
-				GCC_PREFIX_HEADER = /Users/gaolili/Desktop/OneThing/OneThing/PrefixHeader.pch;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/OneThing/PrefixHeader.pch";
 				INFOPLIST_FILE = OneThing/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

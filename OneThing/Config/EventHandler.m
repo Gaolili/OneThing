@@ -8,7 +8,8 @@
 
 #import "EventHandler.h"
 #import <EventKit/EventKit.h>
-
+#import "AppDelegate.h"
+#import "ThingModel.h"
 @implementation EventHandler
 
 static EventHandler * _eventHandler = nil;
@@ -16,17 +17,22 @@ static EventHandler * _eventHandler = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _eventHandler = [[EventHandler alloc]init];
+        
     });
     return _eventHandler;
 }
 
--(void)addEventNotify:(NSDate *)date title:(NSString *)title
+
+-(BOOL)addEventNotify:(NSDate *)date title:(NSString *)title
 
 {
     //生成事件数据库对象
+    AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
+    EKEventStore *eventDB = appDelegate.eventStore;
+    NSLog(@"===event eventStoreIdentifier ==%@",eventDB.eventStoreIdentifier);
     
-    EKEventStore *eventDB = [[EKEventStore alloc] init];
     //申请事件类型权限
+  __block  BOOL isSuccess = NO;
     
     [eventDB requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError * _Nullable error) {
         
@@ -36,9 +42,13 @@ static EventHandler * _eventHandler = nil;
             
             myEvent.title     = title;  //标题
             
+            myEvent.allDay = YES;
+            
             myEvent.startDate = date; //开始date   required
             
-            myEvent.endDate   = date;  //结束date    required
+            NSInteger currentWeek = [date week];
+            
+            myEvent.endDate   = [date dateByAddingDays:7-currentWeek];  //结束date    required
             
             [myEvent addAlarm:[EKAlarm alarmWithAbsoluteDate:date]]; //添加一个闹钟  optional
             
@@ -46,21 +56,27 @@ static EventHandler * _eventHandler = nil;
             
             NSError *err;
             
-            [eventDB saveEvent:myEvent span:EKSpanThisEvent error:&err]; //保存
+           isSuccess =  [eventDB saveEvent:myEvent span:EKSpanFutureEvents error:&err]; //保存
+            if (!error) {
+                [ManagerHandler saveCurrentEventIdentifier:eventDB.eventStoreIdentifier];
+                NSLog(@"add event success");
+            }
             
         }
         
     }];
+    return isSuccess;
     
 }
 
--(void)addReminderNotify:(NSDate *)date title:(NSString *)title
+-(BOOL)addReminderNotify:(NSDate *)date title:(NSString *)title
 
 {
     
-    EKEventStore *eventDB = [[EKEventStore alloc] init];
-    //申请提醒权限
+    AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
+    EKEventStore *eventDB = appDelegate.eventStore;    //申请提醒权限
     
+    __block  BOOL isSuccess = NO;
     [eventDB requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError * _Nullable error) {
         
         if (granted) {
@@ -89,6 +105,9 @@ static EventHandler * _eventHandler = nil;
             
             reminder.startDateComponents = dateComp; //开始时间
             
+            NSInteger currentweek = [date week];
+            dateComp = [cal components:flags fromDate:[date dateByAddingDays:7-currentweek]];
+            
             reminder.dueDateComponents = dateComp; //到期时间
             
             reminder.priority = 1; //优先级
@@ -99,16 +118,61 @@ static EventHandler * _eventHandler = nil;
             
             NSError *err;
             
-            [eventDB saveReminder:reminder commit:YES error:&err];
+            isSuccess =  [eventDB saveReminder:reminder commit:YES error:&err];
+
             
             if (err) {
                 NSLog(@"add  Remainer Fail");
                 
+            }else{
+                NSLog(@"add reminder success");
             }
+            
             
         }
         
     }];
+    return isSuccess;
 }
+
+-(BOOL)removeEvent{
+    AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
+    EKEventStore *eventDB = appDelegate.eventStore;
+    
+    EKEvent * currentEvent  = [eventDB eventWithIdentifier:[ManagerHandler currentEventIdentifier]];
+    NSError*error =nil;
+    [eventDB removeEvent:currentEvent span:EKSpanThisEvent commit:YES error:&error];
+    if (error) {
+        NSLog(@"===remove event fail====");
+        return NO;
+    }
+    NSLog(@"===remove event fail====");
+    return YES;
+ }
+-(BOOL)removeReminder{
+    ThingModel * currentModel = [ThingModel getCurrentThing];
+    
+    AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
+    EKEventStore *eventDB = appDelegate.eventStore;
+    
+    EKCalendar * calender = [EKCalendar calendarForEntityType:EKEntityTypeReminder eventStore:eventDB];
+    NSPredicate * predicate  = [eventDB predicateForIncompleteRemindersWithDueDateStarting:currentModel.createDate ending:nil calendars:@[calender]];
+    
+   __block NSArray * allReminders = [NSArray array];
+   [eventDB fetchRemindersMatchingPredicate:predicate completion:^(NSArray<EKReminder *> * _Nullable reminders) {
+       allReminders = reminders;
+    }];
+    NSError*error =nil;
+    [eventDB removeReminder:allReminders.firstObject commit:YES error:&error];
+  
+     if (error) {
+         NSLog(@"===remove reminder fail====");
+        return NO;
+    }
+    NSLog(@"===remove reminder success====");
+    return YES;
+
+}
+
 
 @end
