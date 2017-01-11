@@ -33,11 +33,11 @@
         [application registerUserNotificationSettings:settings];
     }
     //接收通知
-    UILocalNotification *notification=[launchOptions valueForKey:UIApplicationLaunchOptionsLocalNotificationKey];
-    NSDictionary *userInfo= notification.userInfo;
-    if (userInfo) {
-        [EBForeNotification handleRemoteNotification:userInfo soundID:1312];
-    }
+//    UILocalNotification *notification=[launchOptions valueForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+//    NSDictionary *userInfo= notification.userInfo;
+//    if (userInfo) {
+//        [EBForeNotification handleRemoteNotification:userInfo soundID:1312];
+//    }
     
     _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     HomeViewController  * home = [[HomeViewController alloc]init];

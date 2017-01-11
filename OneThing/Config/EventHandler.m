@@ -28,7 +28,8 @@ static EventHandler * _eventHandler = nil;
 {
     //生成事件数据库对象
     AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
-    EKEventStore *eventDB = appDelegate.eventStore;
+    EKEventStore *eventDB = [[EKEventStore alloc] init];
+    
     NSLog(@"===event eventStoreIdentifier ==%@",eventDB.eventStoreIdentifier);
     
     //申请事件类型权限
@@ -105,7 +106,7 @@ static EventHandler * _eventHandler = nil;
             
             reminder.startDateComponents = dateComp; //开始时间
             
-            NSInteger currentweek = [date week];
+            NSInteger currentweek = [date weekday];
             dateComp = [cal components:flags fromDate:[date dateByAddingDays:7-currentweek]];
             
             reminder.dueDateComponents = dateComp; //到期时间
@@ -139,24 +140,32 @@ static EventHandler * _eventHandler = nil;
     AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
     EKEventStore *eventDB = appDelegate.eventStore;
     
-    EKEvent * currentEvent  = [eventDB eventWithIdentifier:[ManagerHandler currentEventIdentifier]];
+    NSDate * monday = [self currentWeekmonday];//周一
+    
+    EKCalendar * calendar =[eventDB defaultCalendarForNewEvents];
+    
+    NSPredicate * predicate = [eventDB predicateForEventsWithStartDate:monday endDate:[NSDate date] calendars:@[calendar]];
+    NSArray * eventArray  = [eventDB eventsMatchingPredicate:predicate];
     NSError*error =nil;
-    [eventDB removeEvent:currentEvent span:EKSpanThisEvent commit:YES error:&error];
-    if (error) {
-        NSLog(@"===remove event fail====");
-        return NO;
+    for (EKEvent * currentEvent in eventArray ) {
+        [eventDB removeEvent:currentEvent span:EKSpanThisEvent commit:YES error:&error];
+        if (error) {
+            NSLog(@"===remove event fail====");
+            return NO;
+        }
+        NSLog(@"===remove event success====");
     }
-    NSLog(@"===remove event fail====");
     return YES;
  }
+
 -(BOOL)removeReminder{
-    ThingModel * currentModel = [ThingModel getCurrentThing];
     
     AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
     EKEventStore *eventDB = appDelegate.eventStore;
     
-    EKCalendar * calender = [EKCalendar calendarForEntityType:EKEntityTypeReminder eventStore:eventDB];
-    NSPredicate * predicate  = [eventDB predicateForIncompleteRemindersWithDueDateStarting:currentModel.createDate ending:nil calendars:@[calender]];
+    EKCalendar * calender = [eventDB defaultCalendarForNewReminders];
+    
+    NSPredicate * predicate  = [eventDB predicateForCompletedRemindersWithCompletionDateStarting: [NSDate date] ending:[NSDate date] calendars:@[calender]];
     
    __block NSArray * allReminders = [NSArray array];
    [eventDB fetchRemindersMatchingPredicate:predicate completion:^(NSArray<EKReminder *> * _Nullable reminders) {
@@ -172,6 +181,24 @@ static EventHandler * _eventHandler = nil;
     NSLog(@"===remove reminder success====");
     return YES;
 
+}
+
+-(NSDate *)currentWeekmonday{
+    NSInteger todayWeek = [[NSDate date]weekday]-2;
+    NSDate * tempDate ;
+    if(todayWeek>1){
+        tempDate= [[NSDate date] dateBySubtractingDays:todayWeek];
+    }else{
+        tempDate = [[NSDate date] dateBySubtractingDays:6];
+    }
+    return [self stringWithDateZero:tempDate];
+}
+
+- (NSDate *)stringWithDateZero:(NSDate*)date {
+    NSDateFormatter * formatter  = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM-dd 00:00:00";
+    NSString * dateStr = [formatter stringFromDate:date];
+    return [formatter dateFromString:dateStr];
 }
 
 
