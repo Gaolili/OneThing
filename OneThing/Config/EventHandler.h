@@ -15,4 +15,7 @@
 -(BOOL)addReminderNotify:(NSDate *)date title:(NSString *)title;
 -(BOOL)removeEvent;
 -(BOOL)removeReminder;
- @end
+
+- (void)getReminders:(void(^)(NSArray*))reminderBlock;
+- (NSArray *)getEvents;
+@end

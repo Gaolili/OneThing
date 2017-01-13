@@ -31,6 +31,14 @@
     return nil;
 }
 
++ (NSString *)getCurrentThingName{
+    ThingModel * model = [self getCurrentThing];
+    if (model) {
+        return model.thingName;
+    }
+    return nil;
+}
+
 +(BOOL)shouldShowInputThing{
     ThingModel * first = [[self class] getCurrentThing];
     if (first) {

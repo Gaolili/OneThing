@@ -20,4 +20,10 @@
 
 #define  ScreenHeight CGRectGetHeight([UIScreen mainScreen].bounds)
 
+#ifndef __OPTIMIZE__
+#define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#define NSLog(...){}
+#endif
+
 #endif /* Macro_h */

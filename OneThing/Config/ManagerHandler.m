@@ -24,29 +24,6 @@
     NSString * name = [userDefault objectForKey:@"userName"];
     return name;
 }
-+ (void)saveCurrentEventIdentifier:(NSString *)identifier{
-    NSUserDefaults * userDefault = [NSUserDefaults standardUserDefaults];
-    [userDefault setObject:identifier forKey:@"Event_identifier"];
-    [userDefault synchronize];
-
-}
-+(NSString *)currentEventIdentifier{
-    NSUserDefaults * userDefault = [NSUserDefaults standardUserDefaults];
-    NSString * identifier = [userDefault objectForKey:@"Event_identifier"];
-    return identifier;
-}
-
-+(void)saveReminderIdentifier:(NSString *)identifier{
-    NSUserDefaults * userDefault = [NSUserDefaults standardUserDefaults];
-    [userDefault setObject:identifier forKey:@"Reminder_identifier"];
-    [userDefault synchronize];
-
-}
-+(NSString *)reminderIdentifier{
-    NSUserDefaults * userDefault = [NSUserDefaults standardUserDefaults];
-    NSString * identifier = [userDefault objectForKey:@"Reminder_identifier"];
-    return identifier;
-}
 
 +(void)sendCheckFinishThingNotice{
     NSString * thing =   [ThingModel getCurrentThing].thingName;
@@ -54,9 +31,9 @@
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDate *now = [NSDate date];
     NSDateComponents *componentsForFireDate = [calendar components:(NSCalendarUnitYear | NSCalendarUnitWeekdayOrdinal|  NSCalendarUnitHour | NSCalendarUnitMinute| NSCalendarUnitSecond | NSCalendarUnitWeekday) fromDate: now];
-    [componentsForFireDate setWeekday: 1] ; //for fixing Sunday
-    [componentsForFireDate setHour: 20] ; //for fixing 8PM hour
-    [componentsForFireDate setMinute:0] ;
+//    [componentsForFireDate setWeekday: 1] ; //for fixing Sunday
+    [componentsForFireDate setHour: 18] ; //for fixing 8PM hour
+    [componentsForFireDate setMinute:30] ;
     [componentsForFireDate setSecond:0] ;
     ManagerHandler * handler = [[ManagerHandler alloc]init];
     [handler sendNotic:[NSString stringWithFormat:@"这周你的计划%@完成了吗？",thing] fireDate:[calendar dateFromComponents: componentsForFireDate]];
@@ -71,8 +48,8 @@
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     NSDate *now = [NSDate date];
     NSDateComponents *componentsForFireDate = [calendar components:(NSCalendarUnitYear | NSCalendarUnitWeekdayOrdinal|  NSCalendarUnitHour | NSCalendarUnitMinute| NSCalendarUnitSecond | NSCalendarUnitWeekday) fromDate: now];
-    [componentsForFireDate setWeekday: 0] ; //for fixing Sunday
-    [componentsForFireDate setHour: 8] ; //for fixing 8PM hour
+    [componentsForFireDate setWeekday: 2] ; //for fixing Sunday
+    [componentsForFireDate setHour: 9] ; //for fixing 8PM hour
     [componentsForFireDate setMinute:0] ;
     [componentsForFireDate setSecond:0] ;
     ManagerHandler * handler = [[ManagerHandler alloc]init];
@@ -84,23 +61,25 @@
     NSString * thing =   [ThingModel getCurrentThing].thingName;
     if (!thing.length)return;
     
-    NSString * weekThing = content;
     
     UILocalNotification *localNote = [[UILocalNotification alloc] init];
     
     localNote.fireDate = fireDate;
-    localNote.alertBody = weekThing;
+    localNote.alertBody = content;
     localNote.alertAction = @"查看";
     localNote.hasAction = NO;
     localNote.alertTitle = @"你有一条新通知";
     localNote.applicationIconBadgeNumber = 1;
     
-    localNote.repeatInterval=NSCalendarUnitWeekday;//通知重复次数
+    localNote.repeatInterval=NSCalendarUnitDay;//通知重复次数 每天 15：30 分提示
     //    localNote.repeatCalendar=[NSCalendar currentCalendar];
-    localNote.userInfo =@{@"aps":@{@"alert":weekThing}};
+    localNote.userInfo =@{@"aps":@{@"alert":content},@"kLocalNotificationID":content};
     localNote.soundName=UILocalNotificationDefaultSoundName;
     // 3.调用通知
     [[UIApplication sharedApplication] scheduleLocalNotification:localNote];
+    
+//    [[UIApplication sharedApplication] scheduledLocalNotifications];
+    
 //    [[UIApplication sharedApplication] presentLocalNotificationNow:localNote];
 }
 

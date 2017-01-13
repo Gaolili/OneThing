@@ -15,6 +15,10 @@
 @property (nonatomic,strong)NSArray * imgoffArray;
 @property (nonatomic,strong)NSArray * imgonArray;
 @property (nonatomic,strong)ThingModel * currentThing;
+@property (nonatomic,strong)UIButton * calendarsBtn;
+@property (nonatomic,strong)UIButton * remindersBtn;
+@property (nonatomic,strong)UIButton * noticeBtn;
+@property (nonatomic,strong)UIButton * desktopBtn;
 @end
 
 @implementation BottomView
@@ -25,6 +29,10 @@
         _imgonArray =@[@"calender_on",@"reminder_on",@"notification_on",@"wallpaper_on"];
         _currentThing = [ThingModel getCurrentThing];
         [self setup];
+        _calendarsBtn.selected = [[EventHandler shareInstance] getEvents].count;
+        [[EventHandler shareInstance] getReminders:^(NSArray * items) {
+            _remindersBtn.selected = items.count;
+        }];
     }
     return self;
 }
@@ -36,6 +44,10 @@
     for (int i =0; i<4; i++) {
         UIButton * btn = [self custombuttonWithImgnormal:_imgoffArray[i] selectedImg:_imgonArray[i]];
         btn.tag = 1000 + i;
+        [btn setBackgroundImage:[UIImage createImageWithColor:[UIColor getColor:@"#bdc2c7"]] forState:UIControlStateSelected];
+        [btn setBackgroundImage:[UIImage createImageWithColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        
+        [self settingBtn:btn];
         [self addSubview:btn];
         [btn mas_makeConstraints:^(MASConstraintMaker *make) {
             if (!lastBtn) {
@@ -53,8 +65,7 @@
 
 - (void)buttonAction:(UIButton*)btn{
     btn.selected = !btn.selected;
-    btn.backgroundColor = btn.selected ? [UIColor getColor:@"#bdc2c7"]:[UIColor whiteColor];
-   
+    
      if(btn.tag ==1000){
         if(btn.selected){
            [[EventHandler shareInstance] addEventNotify:[NSDate date] title:_currentThing.thingName];
@@ -79,7 +90,7 @@
             }
         }];
     }else{
-           [[UIApplication sharedApplication] cancelAllLocalNotifications];
+           [self removeNotification];
         }
     
     }else{
@@ -87,6 +98,34 @@
     }
 }
 
+- (void)removeNotification{
+    for (UILocalNotification * notification in  [[UIApplication sharedApplication] scheduledLocalNotifications]) {
+        NSString *notiID = notification.userInfo[@"kLocalNotificationID"];
+        if ([notiID isEqualToString:[ThingModel getCurrentThingName]]) {
+            [[UIApplication sharedApplication] cancelLocalNotification:notification];
+         }
+     }
+}
+
+
+- (void)settingBtn:(UIButton*)btn{
+    switch (btn.tag) {
+            case 1000:
+            _calendarsBtn = btn;
+            break;
+            case 1001:
+            _remindersBtn = btn;
+            break;
+            case 1002:
+            _noticeBtn = btn;
+            break;
+            case 1003:
+            _desktopBtn = btn;
+            break;
+        default:
+            break;
+    }
+}
 
  - (UIButton *)custombuttonWithImgnormal:(NSString *)imgNormal selectedImg:(NSString *)selectedImg{
     UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];

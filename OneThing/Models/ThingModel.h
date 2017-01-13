@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Realm/RLMObject.h>
 
 @interface ThingModel : RLMObject
 @property (nonatomic,strong)NSString * thingName;
@@ -16,6 +17,7 @@
 - (void)saveToDataBase;
 + (RLMResults *)getAllThing;
 + (ThingModel *)getCurrentThing;
++ (NSString *)getCurrentThingName;
 
 +(BOOL)shouldShowInputThing;
 +(BOOL)isExitThisWeekThing;

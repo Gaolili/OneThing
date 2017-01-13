@@ -13,12 +13,7 @@
 +(BOOL)shouldPresentIntroVC ;
 +(void)saveUserName:(NSString *)name;
 +(NSString *)getUserName;
-
-+(void)saveCurrentEventIdentifier:(NSString *)identifier;
-+(NSString *)currentEventIdentifier;
-
-+(void)saveReminderIdentifier:(NSString *)identifier;
-+(NSString *)reminderIdentifier;
+ 
 
 +(void)sendCheckFinishThingNotice;
 +(void)sendAddThingNotice;
