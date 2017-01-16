@@ -27,7 +27,6 @@
     if (self = [super initWithFrame:frame]) {
         _imgoffArray =@[@"calender_off",@"reminder_off",@"notification_off",@"wallpaper_off"];
         _imgonArray =@[@"calender_on",@"reminder_on",@"notification_on",@"wallpaper_on"];
-        _currentThing = [ThingModel getCurrentThing];
         [self setup];
         _calendarsBtn.selected = [[EventHandler shareInstance] getEvents].count;
         [[EventHandler shareInstance] getReminders:^(NSArray * items) {
@@ -64,20 +63,24 @@
 }
 
 - (void)buttonAction:(UIButton*)btn{
-    btn.selected = !btn.selected;
+//    btn.selected = !btn.selected;
     
      if(btn.tag ==1000){
-        if(btn.selected){
-           [[EventHandler shareInstance] addEventNotify:[NSDate date] title:_currentThing.thingName];
+        if(!btn.selected){
+           [[EventHandler shareInstance] addEventNotify:[NSDate date] title:self.currentThing.thingName finishBlock:^(BOOL success) {
+               btn.selected = success;
+           }];
         }else{
             //移除事件
-            [[EventHandler shareInstance] removeEvent];
+           btn.selected = ![[EventHandler shareInstance] removeEvent];
         }
      }else if (btn.tag == 1001){
-         if (btn.selected) {
-             [[EventHandler shareInstance] addReminderNotify:[NSDate date] title:_currentThing.thingName];
+         if (!btn.selected) {
+             [[EventHandler shareInstance] addReminderNotify:[NSDate date] title:self.currentThing.thingName finishBlock:^(BOOL success) {
+                 btn.selected = success;
+             }];
          }else{
-             [[EventHandler shareInstance] removeReminder];
+             btn.selected = ![[EventHandler shareInstance] removeReminder];
          }
         
     }else if (btn.tag == 1002){
@@ -125,6 +128,13 @@
         default:
             break;
     }
+}
+
+- (ThingModel *)currentThing{
+    if (!_currentThing) {
+        _currentThing = [ThingModel getCurrentThing];
+    }
+    return  _currentThing;
 }
 
  - (UIButton *)custombuttonWithImgnormal:(NSString *)imgNormal selectedImg:(NSString *)selectedImg{

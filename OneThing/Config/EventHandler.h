@@ -11,8 +11,8 @@
 @interface EventHandler : NSObject
 
 +(instancetype)shareInstance;
--(BOOL)addEventNotify:(NSDate *)date title:(NSString *)title;
--(BOOL)addReminderNotify:(NSDate *)date title:(NSString *)title;
+-(BOOL)addEventNotify:(NSDate *)date title:(NSString *)title finishBlock:(void(^)(BOOL ))block;
+-(BOOL)addReminderNotify:(NSDate *)date title:(NSString *)title finishBlock:(void(^)(BOOL ))block;
 -(BOOL)removeEvent;
 -(BOOL)removeReminder;
 

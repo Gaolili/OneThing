@@ -29,54 +29,47 @@ static EventHandler * _eventHandler = nil;
     return _eventHandler;
 }
 
-
--(BOOL)addEventNotify:(NSDate *)date title:(NSString *)title
-
+- (BOOL)addEventNotify:(NSDate *)date title:(NSString *)title finishBlock:(void (^)(BOOL))block
 {
     //生成事件数据库对象
     AppDelegate * appDelegate =(AppDelegate*)[UIApplication sharedApplication].delegate;
     EKEventStore *eventDB = appDelegate.eventStore;
     
-    NSLog(@"===event eventStoreIdentifier ==%@",eventDB.eventStoreIdentifier);
     
     //申请事件类型权限
   __block  BOOL isSuccess = NO;
     
-    [eventDB requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError * _Nullable error) {
+    if([eventDB respondsToSelector:@selector(requestAccessToEntityType:completion:)]){
+
+      [eventDB requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError * _Nullable error) {
         
-        if (granted) { //授权是否成功
-            
-            EKEvent *myEvent  = [EKEvent eventWithEventStore:eventDB]; //创建一个日历事件
-            
-            myEvent.title     = title;  //标题
-            
-            myEvent.allDay = YES;
-            
-            myEvent.startDate = date; //开始date   required
-            
-//            NSInteger currentWeek = [date weekday];
-            
-            myEvent.endDate   = [self currentWeekSunday];  //结束date    required
-            
-            [myEvent addAlarm:[EKAlarm alarmWithAbsoluteDate:[self currentWeekSunday]]]; //添加一个闹钟  optional
-            
-            [myEvent setCalendar:[eventDB defaultCalendarForNewEvents]]; //添加calendar  required
-            
-            NSError *err;
-            
-           isSuccess =  [eventDB saveEvent:myEvent span:EKSpanFutureEvents error:&err]; //保存
-            if (!error) {
-                 NSLog(@"add event success");
-            }
-            
-        }
-        
-    }];
+           if (!granted) return ;  //授权是否成功
+          
+          dispatch_async(dispatch_get_main_queue(), ^{
+              EKEvent *myEvent  = [EKEvent eventWithEventStore:eventDB]; //创建一个日历事件
+              myEvent.title     = title;  //标题
+              myEvent.allDay = YES;
+              myEvent.startDate = date; //开始date   required
+              myEvent.endDate   = [self currentWeekSunday];  //结束date    required
+              [myEvent addAlarm:[EKAlarm alarmWithAbsoluteDate:[self currentWeekSunday]]]; //添加一个闹钟  optional
+              [myEvent setCalendar:[eventDB defaultCalendarForNewEvents]]; //添加calendar  required
+              
+              NSError *err;
+              
+              isSuccess =  [eventDB saveEvent:myEvent span:EKSpanFutureEvents error:&err]; //保存
+              block(isSuccess);
+              
+              if (!err)NSLog(@"add event success");
+          });
+          
+      }];
+    }
     return isSuccess;
     
 }
 
--(BOOL)addReminderNotify:(NSDate *)date title:(NSString *)title
+
+-(BOOL)addReminderNotify:(NSDate *)date title:(NSString *)title finishBlock:(void (^)(BOOL))block
 
 {
     
@@ -87,59 +80,34 @@ static EventHandler * _eventHandler = nil;
     [eventDB requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError * _Nullable error) {
         
         if (granted) {
-            //创建一个提醒功能
-            
-            EKReminder *reminder = [EKReminder reminderWithEventStore:eventDB];
-            //标题
-            
-            reminder.title = title;
-            //添加日历
-            
+             EKReminder *reminder = [EKReminder reminderWithEventStore:eventDB];
+             reminder.title = title;
             [reminder setCalendar:[eventDB defaultCalendarForNewReminders]];
-          
-            
             NSCalendar *cal = [NSCalendar currentCalendar];
-            
             [cal setTimeZone:[NSTimeZone systemTimeZone]];
             
             NSInteger flags = NSCalendarUnitYear | NSCalendarUnitMonth |
-            
             NSCalendarUnitDay |NSCalendarUnitHour | NSCalendarUnitMinute |
-            
             NSCalendarUnitSecond;
             NSDateComponents* dateComp = [cal components:flags fromDate:date];
             
             dateComp.timeZone = [NSTimeZone systemTimeZone];
-            
             reminder.startDateComponents = dateComp; //开始时间
-            
             dateComp = [cal components:flags fromDate:[self currentWeekSunday]];
-            
             reminder.dueDateComponents = dateComp; //到期时间
             
 //            reminder.completionDate = [self currentWeekSunday];
             
             reminder.priority = 1; //优先级
-            
             EKAlarm *alarm = [EKAlarm alarmWithAbsoluteDate:[self currentWeekSunday]]; //添加一个车闹钟
-            
             [reminder addAlarm:alarm];
-            
             NSError *err;
-            
             isSuccess =  [eventDB saveReminder:reminder commit:YES error:&err];
-
+            block(isSuccess);
             
-            if (err) {
-                NSLog(@"add  Remainer Fail");
-                
-            }else{
-                NSLog(@"add reminder success caldenderIndenifer =%@",eventDB.eventStoreIdentifier);
-                
-            }
-            
-            
-        }
+            if (err) NSLog(@"add  Remainer Fail");
+              
+           }
         
     }];
     return isSuccess;
@@ -223,14 +191,14 @@ static EventHandler * _eventHandler = nil;
 }
 //获取当前周的星期一
 -(NSDate *)currentWeekmonday{
-    NSInteger todayWeek = [[NSDate date]weekday]-2;
+    NSInteger todayWeek = [[NSDate date]weekday];
     NSDate * tempDate ;
-    if(todayWeek>1){
-        tempDate= [[NSDate date] dateBySubtractingDays:todayWeek];
+    if (todayWeek>1&&todayWeek<8) {
+       tempDate = [[NSDate date] dateBySubtractingDays:todayWeek-2];
     }else{
-        tempDate = [[NSDate date] dateBySubtractingDays:6];
+       tempDate = [[NSDate date] dateBySubtractingDays:6];
     }
-    return [self stringWithDateZero:tempDate hourMS:@"00:00:00"];
+    return [self stringWithDateZero:tempDate hourMS:@"yyyy-MM-dd 00:00:00"];
 }
 //获取当前周的星期日
 - (NSDate *)currentWeekSunday{
@@ -241,12 +209,12 @@ static EventHandler * _eventHandler = nil;
     }else{
         tempDate = [NSDate date];
     }
-    return [self stringWithDateZero:tempDate hourMS:@"24:00:00"];
+    return [self stringWithDateZero:tempDate hourMS:@"yyyy-MM-dd 24:00:00"];
 }
 
 - (NSDate *)stringWithDateZero:(NSDate*)date hourMS:(NSString *)hms {
     NSDateFormatter * formatter  = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = [NSString stringWithFormat:@"yyyy-MM-dd %@",hms];
+    formatter.dateFormat = hms;
     NSString * dateStr = [formatter stringFromDate:date];
     return [formatter dateFromString:dateStr];
 }
