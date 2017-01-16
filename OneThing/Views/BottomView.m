@@ -32,6 +32,14 @@
         [[EventHandler shareInstance] getReminders:^(NSArray * items) {
             _remindersBtn.selected = items.count;
         }];
+        
+        for (UILocalNotification * notification in  [[UIApplication sharedApplication] scheduledLocalNotifications]) {
+            NSString *notiID = notification.userInfo[@"kLocalNotificationID"];
+            if ([notiID isEqualToString:[ThingModel getCurrentThingName]]) {
+                _noticeBtn.selected = YES;
+            }
+        }
+        
     }
     return self;
 }
@@ -63,7 +71,7 @@
 }
 
 - (void)buttonAction:(UIButton*)btn{
-//    btn.selected = !btn.selected;
+ 
     
      if(btn.tag ==1000){
         if(!btn.selected){
@@ -85,7 +93,7 @@
         
     }else if (btn.tag == 1002){
         //本地通知
-        
+       btn.selected = !btn.selected;
       if(btn.selected){
         [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionBadge|UNAuthorizationOptionSound|UNAuthorizationOptionAlert completionHandler:^(BOOL granted, NSError * _Nullable error) {
             if (granted) {
@@ -93,8 +101,8 @@
             }
         }];
     }else{
-           [self removeNotification];
-        }
+        [self removeNotification];
+    }
     
     }else{
        // 换肤

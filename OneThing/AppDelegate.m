@@ -39,6 +39,9 @@
 //        [EBForeNotification handleRemoteNotification:userInfo soundID:1312];
 //    }
     
+  NSArray * notics =  [[UIApplication sharedApplication] scheduledLocalNotifications];
+    NSLog(@"==== %@ ===",notics);
+    
     _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     HomeViewController  * home = [[HomeViewController alloc]init];
     _window.rootViewController = home;
