@@ -85,8 +85,8 @@
      }else if (btn.tag == 1001){
          if (!btn.selected) {
              [[EventHandler shareInstance] addReminderNotify:[NSDate date] title:self.currentThing.thingName finishBlock:^(BOOL success) {
-                 btn.selected = success;
-             }];
+                  btn.selected = success ;
+            }];
          }else{
              btn.selected = ![[EventHandler shareInstance] removeReminder];
          }

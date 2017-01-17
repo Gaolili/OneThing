@@ -79,9 +79,10 @@ static EventHandler * _eventHandler = nil;
     __block  BOOL isSuccess = NO;
     [eventDB requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError * _Nullable error) {
         
-        if (granted) {
-             EKReminder *reminder = [EKReminder reminderWithEventStore:eventDB];
-             reminder.title = title;
+        if (!granted) return ;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            EKReminder *reminder = [EKReminder reminderWithEventStore:eventDB];
+            reminder.title = title;
             [reminder setCalendar:[eventDB defaultCalendarForNewReminders]];
             NSCalendar *cal = [NSCalendar currentCalendar];
             [cal setTimeZone:[NSTimeZone systemTimeZone]];
@@ -96,7 +97,7 @@ static EventHandler * _eventHandler = nil;
             dateComp = [cal components:flags fromDate:[self currentWeekSunday]];
             reminder.dueDateComponents = dateComp; //到期时间
             
-//            reminder.completionDate = [self currentWeekSunday];
+            //  reminder.completionDate = [self currentWeekSunday];
             
             reminder.priority = 1; //优先级
             EKAlarm *alarm = [EKAlarm alarmWithAbsoluteDate:[self currentWeekSunday]]; //添加一个车闹钟
@@ -106,8 +107,9 @@ static EventHandler * _eventHandler = nil;
             block(isSuccess);
             
             if (err) NSLog(@"add  Remainer Fail");
-              
-           }
+        });
+        
+       
         
     }];
     return isSuccess;
